@@ -595,6 +595,7 @@ export class GDBDebugSession extends DebugSession {
 
     protected handleAdapterOutput(output) {
         this.sendEvent(new AdapterOutputEvent(output, 'out'));
+        this.handleMsg('stderr', output);
     }
 
     private serverControllerEvent(event: DebugProtocol.Event) {
@@ -604,6 +605,7 @@ export class GDBDebugSession extends DebugSession {
     protected handleMsg(type: string, msg: string) {
         if (type === 'target') { type = 'stdout'; }
         if (type === 'log') { type = 'stderr'; }
+        console.error(msg);
         this.sendEvent(new OutputEvent(msg, type));
     }
 
