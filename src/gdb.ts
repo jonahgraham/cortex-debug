@@ -12,6 +12,7 @@ import * as os from 'os';
 import * as net from 'net';
 import * as path from 'path';
 import * as fs from 'fs';
+import * as tmp from 'tmp';
 import { setTimeout } from 'timers';
 
 import { JLinkServerController } from './jlink';
@@ -133,6 +134,17 @@ export class GDBDebugSession extends DebugSession {
     protected launchRequest(response: DebugProtocol.LaunchResponse, args: ConfigurationArguments): void {
         args.graphConfig = args.graphConfig || [];
         this.args = args;
+        if (args.elf_base64) {
+            const tmpobj = tmp.dirSync();
+            const name = path.basename(args.executable);
+            const executable = path.join(tmpobj.name, name);
+            const elf = new Buffer(args.elf_base64, 'base64');
+            fs.writeFileSync(executable, elf);
+            args.executable = executable;
+            args.cwd = tmpobj.name;
+            args.extensionPath = path.join(__dirname, `../..`);
+        }
+
         this.symbolTable = new SymbolTable(args.toolchainPath, args.executable);
         this.symbolTable.loadSymbols();
         this.breakpointMap = new Map();
