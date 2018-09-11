@@ -142,7 +142,7 @@ export class GDBDebugSession extends DebugSession {
             fs.writeFileSync(executable, elf);
             args.executable = executable;
             args.cwd = tmpobj.name;
-            args.extensionPath = path.join(__dirname, `../..`);
+            args.extensionPath = path.resolve(path.join(__dirname, `../..`));
         }
 
         this.symbolTable = new SymbolTable(args.toolchainPath, args.executable);
@@ -240,7 +240,8 @@ export class GDBDebugSession extends DebugSession {
                 this.miDebugger.printCalls = !!this.args.showDevDebugOutput;
                 this.miDebugger.debugOutput = !!this.args.showDevDebugOutput;
 
-                const commands = [`interpreter-exec console "source ${this.args.extensionPath}/support/gdbsupport.init"`];
+                const gdbsupportPath = `${this.args.extensionPath}/support/gdbsupport.init`.replace(/\\/g, '/');
+                const commands = [`interpreter-exec console "source ${gdbsupportPath}"`];
                 commands.push(...this.serverController.initCommands());
                 
                 if (attach) {
