@@ -841,6 +841,7 @@ export class GDBDebugSession extends DebugSession {
         if (!this.stopped) {
             response.body = { threads: [] };
             this.sendResponse(response);
+            return;
         }
         try {
             const threadIdNode = await this.miDebugger.sendCommand('thread-list-ids');
