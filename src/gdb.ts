@@ -1391,16 +1391,17 @@ export class GDBDebugSession extends DebugSession {
     protected checkFileExists(name: string): Promise<boolean> {
         if (!name) { return Promise.resolve(false); }
 
-        if (this.fileExistsCache.has(name)) { // Check cache
-            return Promise.resolve(this.fileExistsCache.get(name));
-        }
+        return Promise.resolve(true);
+        // if (this.fileExistsCache.has(name)) { // Check cache
+        //     return Promise.resolve(this.fileExistsCache.get(name));
+        // }
 
-        return new Promise((resolve, reject) => {
-            fs.exists(name, (exists) => {
-                this.fileExistsCache.set(name, exists);
-                resolve(exists);
-            });
-        });
+        // return new Promise((resolve, reject) => {
+        //     fs.exists(name, (exists) => {
+        //         this.fileExistsCache.set(name, exists);
+        //         resolve(exists);
+        //     });
+        // });
     }
 
     protected async evaluateRequest(response: DebugProtocol.EvaluateResponse, args: DebugProtocol.EvaluateArguments): Promise<void> {
