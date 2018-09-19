@@ -187,6 +187,10 @@ export class GDBDebugSession extends DebugSession {
             const args = this.serverController.serverArguments();
 
             let gdbExePath = os.platform() !== 'win32' ? 'arm-none-eabi-gdb' : 'arm-none-eabi-gdb.exe';
+            let gdb = path.normalize(path.join(this.args.extensionPath, 'tools', 'arm-none-eabi-gdb.exe'));
+            if (fs.existsSync(gdb)) {
+                gdbExePath = gdb;
+            }
             if (this.args.toolchainPath) {
                 gdbExePath = path.normalize(path.join(this.args.toolchainPath, gdbExePath));
             }

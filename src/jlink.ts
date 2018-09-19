@@ -1,6 +1,8 @@
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { GDBServerController, ConfigurationArguments, calculatePortMask, SWOConfigureEvent } from './common';
 import * as os from 'os';
+import * as fs from 'fs';
+import * as path from 'path';
 import { EventEmitter } from 'events';
 
 const commandExistsSync = require('command-exists').sync;
@@ -104,6 +106,10 @@ export class JLinkServerController extends EventEmitter implements GDBServerCont
         if (this.args.serverpath) { return this.args.serverpath; }
         else {
             if (os.platform() === 'win32') {
+                let server = path.normalize(path.join(this.args.extensionPath, 'tools', 'JLinkGDBServerCL.exe'));
+                if (fs.existsSync(server)) {
+                    return server;
+                }
                 return 'JLinkGDBServerCL.exe';
             }
             else {
